@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملاحظات المكالمات</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background: url('1-mv07R71zqOC3e66K.webp') no-repeat center center;
+            background-size: contain; /* Adjust the size to fit within the viewport */
+            background-attachment: fixed;
+            background-color: #f9f9f9; /* Add a fallback background color */
+            color: #333;
+            direction: rtl;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #007BFF;
+            text-align: center;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        label, input, select, textarea {
+            display: block;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 400px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f1f1f1;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        #searchResults, #followUpTableBody, #deliveryTableBody {
+            max-height: 400px; /* Increase the height limit for better visibility */
+            overflow-y: auto; /* Enable vertical scrolling */
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="navBar" style="background-color: #007BFF; color: white; padding: 10px; text-align: center; position: fixed; top: 0; width: 100%; z-index: 1000;">
+        <button onclick="showPage('mainPage')" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">الرئيسية</button>
+        <button onclick="showPage('page1')" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">تسجيل ملاحظة</button>
+        <button onclick="showPage('page2')" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">البحث</button>
+        <button onclick="showPage('page3')" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">المتابعة</button>
+        <button onclick="showPage('page4')" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">التوصيل</button>
+        <button onclick="logout()" style="background-color: white; color: #007BFF; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px;">تسجيل الخروج</button>
+    </div>
+
+    <div id="mainPage" class="container" style="margin-top: 60px;">
+        <h1>مرحبًا بك في نظام ملاحظات المكالمات</h1>
+        <button onclick="showPage('page1')">تسجيل ملاحظة جديدة</button>
+        <button onclick="showPage('page2')">البحث عن الملاحظات</button>
+        <button onclick="showPage('page3')">إدارة المتابعة</button>
+        <button onclick="showPage('page4')">إدارة التوصيل</button>
+    </div>
+
+    <div id="page1" class="container hidden" style="margin-top: 60px;">
+        <h1>تسجيل ملاحظات المكالمات</h1>
+        <label for="phone">رقم الهاتف:</label>
+        <input type="text" id="phone">
+        <label for="question">السؤال/المشكلة:</label>
+        <input type="text" id="question">
+        <label for="answer">الحل/الإجابة:</label>
+        <textarea id="answer" rows="5" style="resize: none; width: 90%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+        <label for="type">نوع الاتصال:</label>
+        <select id="type">
+            <option value="استفسار">استفسار</option>
+            <option value="قائمة شراء">قائمة شراء</option>
+            <option value="متابعة">متابعة</option>
+            <option value="توصيل">توصيل</option>
+        </select>
+        <button onclick="saveNote()">حفظ الملاحظة</button>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page2" class="container hidden" style="margin-top: 60px;">
+        <h1>البحث عن الملاحظات</h1>
+        <label for="search">البحث برقم الهاتف أو السؤال أو الحل:</label>
+        <input type="text" id="search" placeholder="بحث برقم الهاتف أو السؤال أو التاريخ">
+        <button onclick="searchNotes()">بحث</button>
+        <ul id="searchResults"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page3" class="container hidden" style="margin-top: 60px;">
+        <h1>إدارة المتابعة</h1>
+        <div style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; background: #fff; max-height: 400px; overflow-y: auto; margin-top: 10px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #007BFF; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ccc;">رقم الهاتف</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">السؤال</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">الحل</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">النوع</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">التاريخ</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="followUpTableBody"></tbody> <!-- Scrollable follow-up list -->
+            </table>
+        </div>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page4" class="container hidden" style="margin-top: 60px;">
+        <h1>إدارة التوصيل</h1>
+        <div style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; background: #fff; max-height: 400px; overflow-y: auto; margin-top: 10px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #007BFF; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ccc;">رقم الهاتف</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">السؤال</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">الحل</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">النوع</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">التاريخ</th>
+                        <th style="padding: 10px; border: 1px solid #ccc;">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="deliveryTableBody"></tbody> <!-- Scrollable delivery list -->
+            </table>
+        </div>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        const notes = JSON.parse(localStorage.getItem('notes')) || [];
+        const followUps = JSON.parse(localStorage.getItem('followUps')) || [];
+        const deliveries = JSON.parse(localStorage.getItem('deliveries')) || [];
+
+        const users = JSON.parse(localStorage.getItem('users')) || {};
+        let currentUser = localStorage.getItem('currentUser') || null;
+
+        function saveUsersToLocalStorage() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function saveCurrentUserToLocalStorage() {
+            localStorage.setItem('currentUser', currentUser);
+        }
+
+        function showLoginPage() {
+            document.body.innerHTML = `
+                <div class="container">
+                    <h1>تسجيل الدخول</h1>
+                    <label for="username">اسم المستخدم:</label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+                    <label for="password">كلمة المرور:</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور">
+                    <button onclick="login()">تسجيل الدخول</button>
+                    <button onclick="register()">تسجيل حساب جديد</button>
+                </div>
+            `;
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور.');
+                return;
+            }
+
+            if (users[username] && users[username].password === password) {
+                currentUser = username;
+                saveCurrentUserToLocalStorage();
+                alert('تم تسجيل الدخول بنجاح!');
+                location.reload();
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيح.');
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور.');
+                return;
+            }
+
+            if (users[username]) {
+                alert('اسم المستخدم موجود بالفعل.');
+                return;
+            }
+
+            users[username] = { password, notes: [], followUps: [], deliveries: [] };
+            saveUsersToLocalStorage();
+            alert('تم تسجيل الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
+        }
+
+        function loadUserData() {
+            if (currentUser && users[currentUser]) {
+                const userData = users[currentUser];
+                notes.splice(0, notes.length, ...userData.notes);
+                followUps.splice(0, followUps.length, ...userData.followUps);
+                deliveries.splice(0, deliveries.length, ...userData.deliveries);
+            }
+        }
+
+        function saveUserData() {
+            if (currentUser && users[currentUser]) {
+                users[currentUser].notes = notes;
+                users[currentUser].followUps = followUps;
+                users[currentUser].deliveries = deliveries;
+                saveUsersToLocalStorage();
+            }
+        }
+
+        function logout() {
+            const confirmLogout = confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟');
+            if (confirmLogout) {
+                currentUser = null;
+                saveCurrentUserToLocalStorage();
+                showLoginPage(); // Redirect to the login page
+            }
+        }
+
+        // Ensure the login page is displayed if no user is logged in
+        if (!currentUser) {
+            showLoginPage(); // Show the login page
+        } else {
+            loadUserData();
+            window.addEventListener('beforeunload', saveUserData);
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+            localStorage.setItem('followUps', JSON.stringify(followUps));
+            localStorage.setItem('deliveries', JSON.stringify(deliveries));
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            if (pageId === 'page3') loadFollowUpList();
+            if (pageId === 'page4') loadDeliveryList();
+        }
+
+        function saveNote() {
+            const phone = document.getElementById('phone').value;
+            const question = document.getElementById('question').value;
+            const answer = document.getElementById('answer').value;
+            const type = document.getElementById('type').value;
+            const timestamp = new Date().toLocaleString('ar-EG');
+            const status = type === 'استفسار' ? 'تم إنجاز الملاحظات' : 'قيد التنفيذ';
+
+            if (phone.length !== 11 || isNaN(phone)) {
+                alert('يجب أن يتكون رقم الهاتف من 11 رقمًا.');
+                return;
+            }
+
+            if (phone && question && answer) {
+                const note = { 
+                    phone, 
+                    question, 
+                    answer, 
+                    type, 
+                    timestamp, 
+                    status, 
+                    username: currentUser // Add the username of the logged-in user
+                };
+                notes.unshift(note);
+
+                if (type === 'متابعة' || type === 'قائمة شراء') {
+                    followUps.unshift(note);
+                } else if (type === 'توصيل') {
+                    deliveries.unshift(note);
+                }
+
+                saveToLocalStorage(); // Save data to localStorage
+                saveUserData(); // Save user-specific data
+                alert('تم حفظ الملاحظة بنجاح!');
+                document.getElementById('phone').value = '';
+                document.getElementById('question').value = '';
+                document.getElementById('answer').value = '';
+                document.getElementById('type').value = 'استفسار';
+            } else {
+                alert('يرجى ملء جميع الحقول.');
+            }
+        }
+
+        function searchNotes() {
+            const searchTerm = document.getElementById('search').value.trim().toLowerCase();
+            if (!searchTerm) {
+                alert('يرجى إدخال نص للبحث.');
+                return; // Exit the function if the search input is empty
+            }
+
+            const results = notes.filter(note =>
+                note.phone.toLowerCase().includes(searchTerm) ||
+                note.question.toLowerCase().includes(searchTerm) ||
+                note.timestamp.toLowerCase().includes(searchTerm)
+            );
+
+            const resultsList = document.getElementById('searchResults');
+            resultsList.innerHTML = '';
+            results.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>اسم المستخدم:</strong> ${note.username}<br>
+                    رقم الهاتف: <input type="text" value="${note.phone}" id="editPhone${index}">
+                    السؤال: <input type="text" value="${note.question}" id="editQuestion${index}">
+                    الحل: <textarea id="editAnswer${index}" rows="3" style="resize: none; width: 90%; max-width: 400px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">${note.answer}</textarea>
+                    النوع: ${note.type}, التاريخ: ${note.timestamp}, الحالة: ${note.status || 'قيد التنفيذ'}
+                    <button onclick="updateNote(${index})">تحديث</button>
+                    <button onclick="deleteNote(${index})">حذف</button>
+                    <button onclick="returnToFollowUp(${index})">إرجاع إلى المتابعة</button>
+                    <button onclick="transferToDelivery(${index})">تحويل إلى التوصيل</button>
+                `;
+                resultsList.appendChild(li);
+            });
+        }
+
+        function updateNote(index) {
+            const phone = document.getElementById(`editPhone${index}`).value;
+            const question = document.getElementById(`editQuestion${index}`).value;
+            const answer = document.getElementById(`editAnswer${index}`).value;
+
+            if (phone.length !== 11 || isNaN(phone)) {
+                alert('يجب أن يتكون رقم الهاتف من 11 رقمًا.');
+                return;
+            }
+
+            if (phone && question && answer) {
+                notes[index].phone = phone;
+                notes[index].question = question;
+                notes[index].answer = answer;
+                saveToLocalStorage(); // Save updated data to localStorage
+                saveUserData(); // Save user-specific data
+                alert('تم تحديث الملاحظة بنجاح!');
+                searchNotes();
+            } else {
+                alert('يرجى ملء جميع الحقول.');
+            }
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            saveToLocalStorage(); // Save updated data to localStorage
+            saveUserData(); // Save user-specific data
+            alert('تم حذف الملاحظة بنجاح!');
+            searchNotes();
+        }
+
+        function loadFollowUpList() {
+            const followUpTableBody = document.getElementById('followUpTableBody');
+            followUpTableBody.innerHTML = '';
+            followUps.forEach((note, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.phone}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.question}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.answer}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.type}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.timestamp}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">
+                        <button style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;" onclick="completeFollowUp(${index})">إتمام المتابعة</button>
+                        <button style="background-color: #007BFF; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;" onclick="transferToDelivery(${index})">تحويل إلى التوصيل</button>
+                    </td>
+                `;
+                followUpTableBody.appendChild(row);
+            });
+        }
+
+        function completeFollowUp(index) {
+            const note = followUps[index];
+            note.status = 'تم إنجاز الملاحظات';
+            followUps.splice(index, 1);
+            saveToLocalStorage(); // Save updated data to localStorage
+            saveUserData(); // Save user-specific data
+            alert('تم إتمام المتابعة!');
+            loadFollowUpList();
+        }
+
+        function returnToFollowUp(index) {
+            const note = notes[index];
+            if (!followUps.includes(note)) {
+                followUps.unshift(note); // Add the note back to the beginning of the follow-ups
+                note.status = 'قيد التنفيذ'; // Update the status when returning to follow-up
+                saveToLocalStorage(); // Save updated data to localStorage
+                saveUserData(); // Save user-specific data
+                alert('تم إرجاع الملاحظة إلى قسم المتابعة!');
+            } else {
+                alert('الملاحظة موجودة بالفعل في قسم المتابعة.');
+            }
+            searchNotes();
+        }
+
+        function loadDeliveryList() {
+            const deliveryTableBody = document.getElementById('deliveryTableBody');
+            deliveryTableBody.innerHTML = '';
+            deliveries.forEach((note, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.phone}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.question}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.answer}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.type}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc;">${note.timestamp}</td>
+                    <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">
+                        <button style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;" onclick="markAsPrepared(${index})">تم التجهيز</button>
+                    </td>
+                `;
+                deliveryTableBody.appendChild(row);
+            });
+        }
+
+        function transferToDelivery(index) {
+            const note = followUps[index];
+            if (!deliveries.includes(note)) {
+                deliveries.unshift(note); // Add the note to the delivery section
+                note.type = 'توصيل'; // Change the type to "توصيل"
+                note.status = 'قيد التنفيذ'; // Update the status for delivery
+                followUps.splice(index, 1); // Remove the note from the follow-up section
+                saveToLocalStorage(); // Save updated data to localStorage
+                saveUserData(); // Save user-specific data
+                alert('تم تحويل الملاحظة إلى قسم التوصيل وتم تحديث النوع إلى "توصيل"!');
+            } else {
+                alert('الملاحظة موجودة بالفعل في قسم التوصيل.');
+            }
+            loadFollowUpList();
+            loadDeliveryList();
+        }
+
+        function markAsPrepared(index) {
+            const note = deliveries[index];
+            deliveries.splice(index, 1); // Remove the note from the delivery section
+            saveToLocalStorage(); // Save updated data to localStorage
+            saveUserData(); // Save user-specific data
+            alert('تم تحديث حالة الملاحظة إلى "تم التجهيز" وتم حذفها من قسم التوصيل!');
+            loadDeliveryList();
+        }
+
+        function loadNotes() {
+            fetch('http://localhost:3000/notes')
+                .then((response) => response.json())
+                .then((data) => {
+                    const resultsList = document.getElementById('searchResults');
+                    resultsList.innerHTML = '';
+                    data.forEach((note) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            رقم الهاتف: ${note.phone}, السؤال: ${note.question}, الحل: ${note.answer}, النوع: ${note.type}, التاريخ: ${note.timestamp}, الحالة: ${note.status}
+                        `;
+                        resultsList.appendChild(li);
+                    });
+                })
+                .catch((error) => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
