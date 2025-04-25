@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملاحظات المكالمات</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background: url('./1-mv07R71zqOC3e66K.webp') no-repeat center center fixed; /* Corrected relative path */
+            background-size: contain; /* Adjusted to fit the image within the viewport */
+            background-color: #000; /* Black background as fallback */
+            color: #FFD700; /* Gold text color */
+            direction: rtl;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3); /* Gold shadow */
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            color: #FFF; /* White text for better contrast */
+        }
+        h1 {
+            color: #FFD700; /* Gold */
+            font-size: 28px; /* Slightly larger for better readability */
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #333; /* Dark gray for better contrast */
+            color: #FFD700; /* Gold text */
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #444; /* Slightly lighter gray */
+            transform: scale(1.05); /* Slight zoom effect */
+        }
+        label, input, select, textarea {
+            display: block;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #FFD700; /* Gold border */
+            border-radius: 8px;
+            background: #222; /* Darker background for inputs */
+            color: #FFF; /* White text for better readability */
+        }
+        input::placeholder, textarea::placeholder {
+            color: #CCC; /* Light gray placeholder text */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            background: #111; /* Very dark background for lists */
+        }
+        li {
+            background: #222; /* Darker gray for list items */
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 8px;
+            color: #FFD700; /* Gold text */
+        }
+        #navBar {
+            background-color: #111; /* Very dark background for navbar */
+            color: #FFD700; /* Gold */
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3); /* Gold shadow */
+        }
+        #navBar button {
+            background-color: #222; /* Darker gray for navbar buttons */
+            color: #FFD700; /* Gold */
+            border: 1px solid #FFD700; /* Gold border */
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #navBar button:hover {
+            background-color: #333; /* Slightly lighter gray */
+            color: #000; /* Black text */
+        }
+        .hidden {
+            display: none;
+        }
+        #searchResults, #followUpTableBody, #deliveryTableBody {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #FFD700; /* Gold border */
+            border-radius: 8px;
+            padding: 10px;
+            background: #000; /* Black background */
+            color: #FFD700; /* Gold text */
+        }
+    </style>
+</head>
+<body>
+    <div id="navBar">
+        <button onclick="showPage('mainPage')">الرئيسية</button>
+        <button onclick="showPage('page1')">تسجيل ملاحظة</button>
+        <button onclick="showPage('page2')">البحث</button>
+        <button onclick="showPage('page3')">المتابعة</button>
+        <button onclick="showPage('page4')">التوصيل</button>
+        <button onclick="showPage('summaryPage')">ملخص الملاحظات</button>
+        <button onclick="showPage('blacklistPage')">القائمة السوداء</button>
+    </div>
+
+    <div id="mainPage" class="container">
+        <h1>مرحبًا بك في نظام ملاحظات المكالمات</h1>
+        <p>اختر أحد الخيارات أدناه للمتابعة:</p>
+        <button onclick="showPage('page1')">تسجيل ملاحظة جديدة</button>
+        <button onclick="showPage('page2')">البحث عن الملاحظات</button>
+        <button onclick="showPage('page3')">إدارة المتابعة</button>
+        <button onclick="showPage('page4')">إدارة التوصيل</button>
+        <button onclick="showPage('summaryPage')">عرض ملخص الملاحظات</button>
+        <button onclick="showPage('blacklistPage')">إدارة القائمة السوداء</button>
+    </div>
+
+    <div id="page1" class="container hidden">
+        <h1>تسجيل ملاحظات المكالمات</h1>
+        <label for="phone">رقم الهاتف:</label>
+        <input type="text" id="phone">
+        <label for="question">السؤال/المشكلة:</label>
+        <input type="text" id="question">
+        <label for="answer">الحل/الإجابة:</label>
+        <textarea id="answer" rows="5"></textarea>
+        <label for="type">نوع الاتصال:</label>
+        <select id="type">
+            <option value="استفسار">استفسار</option>
+            <option value="قائمة شراء">قائمة شراء</option>
+            <option value="متابعة">متابعة</option>
+            <option value="توصيل">توصيل</option>
+        </select>
+        <button onclick="saveNote()">حفظ الملاحظة</button>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page2" class="container hidden">
+        <h1>البحث عن الملاحظات</h1>
+        <label for="search">البحث برقم الهاتف أو السؤال أو الحل:</label>
+        <input type="text" id="search" placeholder="بحث برقم الهاتف أو السؤال أو التاريخ">
+        <button onclick="searchNotes()">بحث</button>
+        <ul id="searchResults"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page3" class="container hidden">
+        <h1>إدارة المتابعة</h1>
+        <ul id="followUpTableBody"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="page4" class="container hidden">
+        <h1>إدارة التوصيل</h1>
+        <ul id="deliveryTableBody"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="summaryPage" class="container hidden">
+        <h1>ملخص الملاحظات</h1>
+        <ul id="summaryResults"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <div id="blacklistPage" class="container hidden">
+        <h1>إدارة القائمة السوداء</h1>
+        <label for="blacklistPhone">إضافة رقم إلى القائمة السوداء:</label>
+        <input type="text" id="blacklistPhone" placeholder="أدخل رقم الهاتف">
+        <button onclick="addToBlacklist()">إضافة</button>
+        <label for="blacklistSearch">البحث عن رقم في القائمة السوداء:</label>
+        <input type="text" id="blacklistSearch" placeholder="أدخل رقم الهاتف للبحث">
+        <button onclick="searchBlacklist()">بحث</button>
+        <ul id="blacklistResults"></ul>
+        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+        let currentUser = localStorage.getItem('currentUser') || null;
+        let blacklist = JSON.parse(localStorage.getItem('blacklist')) || [];
+
+        function saveNote() {
+            const phone = document.getElementById('phone').value.trim();
+            const question = document.getElementById('question').value.trim();
+            const answer = document.getElementById('answer').value.trim();
+            const type = document.getElementById('type').value;
+
+            if (!phone || !question || !answer) {
+                alert('يرجى ملء جميع الحقول.');
+                return;
+            }
+
+            const note = {
+                phone,
+                question,
+                answer,
+                type,
+                date: new Date().toLocaleString(),
+                savedBy: currentUser,
+                status: 'نشطة'
+            };
+            notes.push(note);
+            localStorage.setItem('notes', JSON.stringify(notes));
+            alert(`تم حفظ الملاحظة بنجاح بواسطة ${currentUser}!`);
+
+            // Add note to the appropriate pages
+            addToNotesPage(note);
+            if (type === 'متابعة' || type === 'قائمة شراء') {
+                addToFollowUpPage(note);
+            } else if (type === 'توصيل') {
+                addToDeliveryPage(note);
+            }
+
+            // Clear input fields
+            document.getElementById('phone').value = '';
+            document.getElementById('question').value = '';
+            document.getElementById('answer').value = '';
+            document.getElementById('type').value = 'استفسار';
+        }
+
+        function addToNotesPage(note) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML += `
+                <li>
+                    رقم الهاتف: ${note.phone}<br>
+                    السؤال: ${note.question}<br>
+                    الإجابة: ${note.answer}<br>
+                    النوع: ${note.type}<br>
+                    التاريخ: ${note.date}<br>
+                    الحالة: ${note.status}<br>
+                    محفوظ بواسطة: ${note.savedBy}<br>
+                    <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
+                    <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
+                    <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
+                </li>
+            `;
+        }
+
+        function addToFollowUpPage(note) {
+            const followUpTableBody = document.getElementById('followUpTableBody');
+            followUpTableBody.innerHTML += `
+                <li>
+                    رقم الهاتف: ${note.phone}<br>
+                    السؤال: ${note.question}<br>
+                    الإجابة: ${note.answer}<br>
+                    النوع: ${note.type}<br>
+                    التاريخ: ${note.date}<br>
+                    محفوظ بواسطة: ${note.savedBy}<br>
+                    <button onclick="markAsCompleted('${note.phone}', '${note.date}')">إتمام المهمة</button>
+                    <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
+                </li>
+            `;
+        }
+
+        function addToDeliveryPage(note) {
+            const deliveryTableBody = document.getElementById('deliveryTableBody');
+            deliveryTableBody.innerHTML += `
+                <li>
+                    رقم الهاتف: ${note.phone}<br>
+                    السؤال: ${note.question}<br>
+                    الإجابة: ${note.answer}<br>
+                    النوع: ${note.type}<br>
+                    التاريخ: ${note.date}<br>
+                    محفوظ بواسطة: ${note.savedBy}<br>
+                    <button onclick="markAsPrepared('${note.phone}', '${note.date}')">تم التجهيز</button>
+                    <button onclick="markAsPending('${note.phone}', '${note.date}')">انتظار للتأكيد</button>
+                </li>
+            `;
+        }
+
+        function moveToFollowUp(phone, date) {
+            const note = notes.find(n => n.phone === phone && n.date === date);
+            if (note) {
+                note.type = 'متابعة';
+                note.status = 'جاري المعالجة';
+                localStorage.setItem('notes', JSON.stringify(notes));
+                alert('تم نقل الملاحظة إلى المتابعة.');
+                updateFollowUpPage();
+            }
+        }
+
+        function moveToDelivery(phone, date) {
+            const note = notes.find(n => n.phone === phone && n.date === date);
+            if (note) {
+                note.type = 'توصيل';
+                note.status = 'جاري المعالجة';
+                localStorage.setItem('notes', JSON.stringify(notes));
+                alert('تم نقل الملاحظة إلى التوصيل.');
+                updateDeliveryPage();
+            }
+        }
+
+        function markAsPrepared(phone, date) {
+            const noteIndex = notes.findIndex(n => n.phone === phone && n.date === date);
+            if (noteIndex !== -1) {
+                notes[noteIndex].status = 'تم التجهيز'; // Update the status only
+                localStorage.setItem('notes', JSON.stringify(notes));
+                alert('تم تجهيز الملاحظة وحذفها من صفحة التوصيل.');
+                updateDeliveryPage(); // Update the التوصيل page
+            }
+        }
+
+        function markAsCompleted(phone, date) {
+            const noteIndex = notes.findIndex(n => n.phone === phone && n.date === date);
+            if (noteIndex !== -1) {
+                notes[noteIndex].status = 'تم الإنجاز'; // Update the status only
+                localStorage.setItem('notes', JSON.stringify(notes));
+                alert('تم إتمام المهمة وحذف الملاحظة من صفحة المتابعة.');
+                updateFollowUpPage(); // Update the متابعة page
+            }
+        }
+
+        function updateFollowUpPage() {
+            const followUpTableBody = document.getElementById('followUpTableBody');
+            followUpTableBody.innerHTML = '';
+            notes.filter(note => (note.type === 'متابعة' || note.type === 'قائمة شراء') && note.status !== 'تم الإنجاز').forEach(addToFollowUpPage);
+        }
+
+        function updateDeliveryPage() {
+            const deliveryTableBody = document.getElementById('deliveryTableBody');
+            deliveryTableBody.innerHTML = '';
+            notes.filter(note => note.type === 'توصيل' && note.status !== 'تم التجهيز').forEach(addToDeliveryPage);
+        }
+
+        function updateNotesPage() {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = notes
+                .map(note => `
+                    <li>
+                        رقم الهاتف: ${note.phone}<br>
+                        السؤال: ${note.question}<br>
+                        الإجابة: ${note.answer}<br>
+                        النوع: ${note.type}<br>
+                        التاريخ: ${note.date}<br>
+                        الحالة: ${note.status}<br>
+                        محفوظ بواسطة: ${note.savedBy}<br>
+                        <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
+                        <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
+                        <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
+                    </li>
+                `).join('');
+        }
+
+        function updateSummaryPage() {
+            const totalNotes = notes.length;
+            const inquiries = notes.filter(note => note.type === 'استفسار').length;
+            const followUps = notes.filter(note => note.type === 'متابعة').length;
+            const deliveries = notes.filter(note => note.type === 'توصيل').length;
+            const purchaseLists = notes.filter(note => note.type === 'قائمة شراء').length;
+
+            const summaryResults = document.getElementById('summaryResults');
+            summaryResults.innerHTML = `
+                <li>إجمالي عدد الملاحظات: ${totalNotes}</li>
+                <li>عدد الاستفسارات: ${inquiries}</li>
+                <li>عدد المتابعات: ${followUps}</li>
+                <li>عدد التوصيلات: ${deliveries}</li>
+                <li>عدد قوائم الشراء: ${purchaseLists}</li>
+            `;
+        }
+
+        function deleteNote(phone, date) {
+            const confirmDelete = confirm('هل أنت متأكد أنك تريد حذف هذه الملاحظة؟');
+            if (confirmDelete) {
+                notes = notes.filter(note => !(note.phone === phone && note.date === date));
+                localStorage.setItem('notes', JSON.stringify(notes));
+                alert('تم حذف الملاحظة بنجاح.');
+                updateNotesPage();
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.container').forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+
+            // Update content dynamically when switching pages
+            if (pageId === 'page2') updateNotesPage();
+            if (pageId === 'page3') updateFollowUpPage();
+            if (pageId === 'page4') updateDeliveryPage();
+            if (pageId === 'summaryPage') updateSummaryPage();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('mainPage'); // Show the main page by default
+        });
+
+        function searchNotes() {
+            const searchQuery = document.getElementById('search').value.trim().toLowerCase();
+            const results = notes.filter(note =>
+                note.phone.includes(searchQuery) ||
+                note.question.toLowerCase().includes(searchQuery) ||
+                note.answer.toLowerCase().includes(searchQuery) ||
+                note.date.includes(searchQuery)
+            );
+
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = results.length
+                ? results.map(note => `
+                    <li>
+                        رقم الهاتف: ${note.phone}<br>
+                        السؤال: ${note.question}<br>
+                        الإجابة: ${note.answer}<br>
+                        النوع: ${note.type}<br>
+                        التاريخ: ${note.date}<br>
+                        الحالة: ${note.status}<br>
+                        محفوظ بواسطة: ${note.savedBy}<br>
+                        <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
+                        <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
+                        <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
+                    </li>
+                `).join('')
+                : '<li>لا توجد نتائج مطابقة.</li>';
+        }
+
+        function addToBlacklist() {
+            const phone = document.getElementById('blacklistPhone').value.trim();
+            if (!phone) {
+                alert('يرجى إدخال رقم الهاتف.');
+                return;
+            }
+
+            if (blacklist.includes(phone)) {
+                alert('هذا الرقم موجود بالفعل في القائمة السوداء.');
+                return;
+            }
+
+            blacklist.push(phone);
+            localStorage.setItem('blacklist', JSON.stringify(blacklist));
+            alert('تمت إضافة الرقم إلى القائمة السوداء.');
+            document.getElementById('blacklistPhone').value = '';
+            updateBlacklistPage();
+        }
+
+        function searchBlacklist() {
+            const searchQuery = document.getElementById('blacklistSearch').value.trim();
+            const results = blacklist.filter(phone => phone.includes(searchQuery));
+
+            const blacklistResults = document.getElementById('blacklistResults');
+            blacklistResults.innerHTML = results.length
+                ? results.map(phone => `<li>رقم الهاتف: ${phone}</li>`).join('')
+                : '<li>لا توجد نتائج مطابقة.</li>';
+        }
+
+        function deleteFromBlacklist(phone) {
+            const confirmDelete = confirm(`هل أنت متأكد أنك تريد حذف الرقم ${phone} من القائمة السوداء؟`);
+            if (confirmDelete) {
+                blacklist = blacklist.filter(p => p !== phone);
+                localStorage.setItem('blacklist', JSON.stringify(blacklist));
+                alert('تم حذف الرقم من القائمة السوداء.');
+                updateBlacklistPage();
+            }
+        }
+
+        function updateBlacklistPage() {
+            const blacklistResults = document.getElementById('blacklistResults');
+            blacklistResults.innerHTML = blacklist.map(phone => `
+                <li>
+                    رقم الهاتف: ${phone}
+                    <button onclick="deleteFromBlacklist('${phone}')">حذف</button>
+                </li>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBlacklistPage();
+        });
+    </script>
+</body>
+</html>
