@@ -1,488 +1,369 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ملاحظات المكالمات</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            background: url('./1-mv07R71zqOC3e66K.webp') no-repeat center center fixed; /* Corrected relative path */
-            background-size: contain; /* Adjusted to fit the image within the viewport */
-            background-color: #000; /* Black background as fallback */
-            color: #FFD700; /* Gold text color */
-            direction: rtl;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3); /* Gold shadow */
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-            color: #FFF; /* White text for better contrast */
-        }
-        h1 {
-            color: #FFD700; /* Gold */
-            font-size: 28px; /* Slightly larger for better readability */
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #333; /* Dark gray for better contrast */
-            color: #FFD700; /* Gold text */
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        button:hover {
-            background-color: #444; /* Slightly lighter gray */
-            transform: scale(1.05); /* Slight zoom effect */
-        }
-        label, input, select, textarea {
-            display: block;
-            margin: 10px auto;
-            width: 90%;
-            max-width: 400px;
-            padding: 10px;
-            border: 1px solid #FFD700; /* Gold border */
-            border-radius: 8px;
-            background: #222; /* Darker background for inputs */
-            color: #FFF; /* White text for better readability */
-        }
-        input::placeholder, textarea::placeholder {
-            color: #CCC; /* Light gray placeholder text */
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            background: #111; /* Very dark background for lists */
-        }
-        li {
-            background: #222; /* Darker gray for list items */
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 8px;
-            color: #FFD700; /* Gold text */
-        }
-        #navBar {
-            background-color: #111; /* Very dark background for navbar */
-            color: #FFD700; /* Gold */
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3); /* Gold shadow */
-        }
-        #navBar button {
-            background-color: #222; /* Darker gray for navbar buttons */
-            color: #FFD700; /* Gold */
-            border: 1px solid #FFD700; /* Gold border */
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        #navBar button:hover {
-            background-color: #333; /* Slightly lighter gray */
-            color: #000; /* Black text */
-        }
-        .hidden {
-            display: none;
-        }
-        #searchResults, #followUpTableBody, #deliveryTableBody {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 10px;
-            border: 1px solid #FFD700; /* Gold border */
-            border-radius: 8px;
-            padding: 10px;
-            background: #000; /* Black background */
-            color: #FFD700; /* Gold text */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>متابعة سكر الدم</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Cairo:700,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', Arial, sans-serif;
+      background-color: #f0f4f8;
+      direction: rtl;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 40px 24px 32px 24px;
+      border-radius: 18px;
+      box-shadow: 0 0 24px rgba(0,0,0,0.13);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 2.6rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .instructions {
+      text-align: center;
+      font-size: 1.25rem;
+      color: #555;
+      margin-bottom: 30px;
+      background: #eaf6ff;
+      padding: 12px 0;
+      border-radius: 8px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      display: block;
+      color: #2c3e50;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 18px;
+      font-size: 1.5rem;
+      border: 2px solid #b3c6e0;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      background: #f8fbff;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+    input[type="number"]:focus {
+      border: 2.5px solid #2980b9;
+      outline: none;
+      background: #eaf6ff;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 18px 0;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+    }
+
+    .btn-add {
+      background-color: #3498db;
+    }
+    .btn-add:hover {
+      background-color: #217dbb;
+    }
+    .btn-pdf {
+      background-color: #27ae60;
+    }
+    .btn-pdf:hover {
+      background-color: #1e874a;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 18px;
+      border-radius: 10px;
+      box-shadow: 0 1px 8px rgba(44,62,80,0.06);
+      background: #f8fbff;
+      padding: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.15rem;
+      min-width: 600px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 16px 10px;
+      border: 1px solid #e0e6ed;
+      text-align: center;
+    }
+
+    th {
+      background-color: #2980b9;
+      color: white;
+      font-size: 1.15rem;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .note {
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .note-low {
+      color: #e74c3c;
+    }
+    .note-normal {
+      color: #27ae60;
+    }
+    .note-high {
+      color: #e67e22;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      justify-content: center;
+    }
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px 2vw 18px 2vw;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .instructions {
+        font-size: 1rem;
+      }
+      input[type="number"] {
+        font-size: 1.1rem;
+        padding: 12px;
+      }
+      .btn {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+      table {
+        font-size: 0.95rem;
+        min-width: 400px;
+      }
+      th, td {
+        padding: 10px 4px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="navBar">
-        <button onclick="showPage('mainPage')">الرئيسية</button>
-        <button onclick="showPage('page1')">تسجيل ملاحظة</button>
-        <button onclick="showPage('page2')">البحث</button>
-        <button onclick="showPage('page3')">المتابعة</button>
-        <button onclick="showPage('page4')">التوصيل</button>
-        <button onclick="showPage('summaryPage')">ملخص الملاحظات</button>
-        <button onclick="showPage('blacklistPage')">القائمة السوداء</button>
+  <div class="container">
+    <h1>متابعة سكر الدم</h1>
+    <div class="instructions">
+      أدخل قياس السكر في الحقل أدناه واضغط <b>إضافة</b>.<br>
+      يمكنك حذف أي سجل أو تحميل جميع السجلات كملف PDF.<br>
+      <span style="color:#e74c3c;font-weight:bold;">ملاحظة:</span> هذا البرنامج سهل الاستخدام ومناسب لكبار السن.
     </div>
 
-    <div id="mainPage" class="container">
-        <h1>مرحبًا بك في نظام ملاحظات المكالمات</h1>
-        <p>اختر أحد الخيارات أدناه للمتابعة:</p>
-        <button onclick="showPage('page1')">تسجيل ملاحظة جديدة</button>
-        <button onclick="showPage('page2')">البحث عن الملاحظات</button>
-        <button onclick="showPage('page3')">إدارة المتابعة</button>
-        <button onclick="showPage('page4')">إدارة التوصيل</button>
-        <button onclick="showPage('summaryPage')">عرض ملخص الملاحظات</button>
-        <button onclick="showPage('blacklistPage')">إدارة القائمة السوداء</button>
+    <label for="reading">قياس السكر (ملغم/ديسيلتر):</label>
+    <input type="number" id="reading" placeholder="ادخل قيمة قياس السكر" required autofocus />
+
+    <div class="btn-group">
+      <button class="btn btn-add" onclick="addRecord()">
+        <span aria-hidden="true">➕</span> إضافة
+      </button>
+      <button class="btn btn-pdf" onclick="downloadPDF()">
+        <span aria-hidden="true">⬇️</span> تحميل كـ PDF
+      </button>
     </div>
 
-    <div id="page1" class="container hidden">
-        <h1>تسجيل ملاحظات المكالمات</h1>
-        <label for="phone">رقم الهاتف:</label>
-        <input type="text" id="phone">
-        <label for="question">السؤال/المشكلة:</label>
-        <input type="text" id="question">
-        <label for="answer">الحل/الإجابة:</label>
-        <textarea id="answer" rows="5"></textarea>
-        <label for="type">نوع الاتصال:</label>
-        <select id="type">
-            <option value="استفسار">استفسار</option>
-            <option value="قائمة شراء">قائمة شراء</option>
-            <option value="متابعة">متابعة</option>
-            <option value="توصيل">توصيل</option>
-        </select>
-        <button onclick="saveNote()">حفظ الملاحظة</button>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
+    <div class="table-wrapper" id="tableContainer">
+      <table id="recordsTable">
+        <thead>
+          <tr>
+            <th>القياس</th>
+            <th>الملاحظة</th>
+            <th>التاريخ والوقت</th>
+            <th>حذف</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
+  </div>
 
-    <div id="page2" class="container hidden">
-        <h1>البحث عن الملاحظات</h1>
-        <label for="search">البحث برقم الهاتف أو السؤال أو الحل:</label>
-        <input type="text" id="search" placeholder="بحث برقم الهاتف أو السؤال أو التاريخ">
-        <button onclick="searchNotes()">بحث</button>
-        <ul id="searchResults"></ul>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
-    </div>
+  <script>
+    let records = [];
 
-    <div id="page3" class="container hidden">
-        <h1>إدارة المتابعة</h1>
-        <ul id="followUpTableBody"></ul>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
-    </div>
+    // تحميل البيانات المحفوظة عند فتح الصفحة
+    window.onload = function () {
+      const saved = localStorage.getItem('bloodSugarRecords');
+      if (saved) {
+        records = JSON.parse(saved);
+        updateTable();
+      }
+      // تركيز تلقائي على الحقل
+      document.getElementById('reading').focus();
+    };
 
-    <div id="page4" class="container hidden">
-        <h1>إدارة التوصيل</h1>
-        <ul id="deliveryTableBody"></ul>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
-    </div>
+    function addRecord() {
+      const readingInput = document.getElementById('reading');
+      const reading = parseFloat(readingInput.value);
+      if (isNaN(reading)) {
+        alert('الرجاء إدخال قيمة صحيحة لقياس السكر');
+        readingInput.focus();
+        return;
+      }
 
-    <div id="summaryPage" class="container hidden">
-        <h1>ملخص الملاحظات</h1>
-        <ul id="summaryResults"></ul>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
-    </div>
+      const now = new Date();
+      const date = now.toLocaleDateString('ar-EG');
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const ampm = hours >= 12 ? 'مساءً' : 'صباحاً';
+      hours = hours % 12 || 12;
+      const time = `${hours}:${minutes} ${ampm}`;
 
-    <div id="blacklistPage" class="container hidden">
-        <h1>إدارة القائمة السوداء</h1>
-        <label for="blacklistPhone">إضافة رقم إلى القائمة السوداء:</label>
-        <input type="text" id="blacklistPhone" placeholder="أدخل رقم الهاتف">
-        <button onclick="addToBlacklist()">إضافة</button>
-        <label for="blacklistSearch">البحث عن رقم في القائمة السوداء:</label>
-        <input type="text" id="blacklistSearch" placeholder="أدخل رقم الهاتف للبحث">
-        <button onclick="searchBlacklist()">بحث</button>
-        <ul id="blacklistResults"></ul>
-        <button onclick="showPage('mainPage')">العودة إلى الصفحة الرئيسية</button>
-    </div>
+      let note = '';
+      let noteClass = '';
+      let noteIcon = '';
+      if (reading < 70) {
+        note = 'منخفض';
+        noteClass = 'note-low';
+        noteIcon = '🔻';
+      } else if (reading <= 140) {
+        note = 'طبيعي';
+        noteClass = 'note-normal';
+        noteIcon = '✅';
+      } else {
+        note = 'مرتفع';
+        noteClass = 'note-high';
+        noteIcon = '🔺';
+      }
 
-    <script>
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        let currentUser = localStorage.getItem('currentUser') || null;
-        let blacklist = JSON.parse(localStorage.getItem('blacklist')) || [];
+      records.push({ reading, note, noteClass, noteIcon, date, time });
+      saveRecords();
+      updateTable();
+      readingInput.value = '';
+      readingInput.focus();
+    }
 
-        function saveNote() {
-            const phone = document.getElementById('phone').value.trim();
-            const question = document.getElementById('question').value.trim();
-            const answer = document.getElementById('answer').value.trim();
-            const type = document.getElementById('type').value;
+    function saveRecords() {
+      localStorage.setItem('bloodSugarRecords', JSON.stringify(records));
+    }
 
-            if (!phone || !question || !answer) {
-                alert('يرجى ملء جميع الحقول.');
-                return;
-            }
+    function deleteRecord(index) {
+      if (confirm('هل أنت متأكد من حذف هذا السطر؟')) {
+        records.splice(index, 1);
+        saveRecords();
+        updateTable();
+      }
+    }
 
-            const note = {
-                phone,
-                question,
-                answer,
-                type,
-                date: new Date().toLocaleString(),
-                savedBy: currentUser,
-                status: 'نشطة'
-            };
-            notes.push(note);
-            localStorage.setItem('notes', JSON.stringify(notes));
-            alert(`تم حفظ الملاحظة بنجاح بواسطة ${currentUser}!`);
+    function updateTable() {
+      const tbody = document.getElementById('recordsTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      if (records.length === 0) {
+        const row = tbody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.textContent = 'لا توجد سجلات بعد.';
+        cell.style.color = '#888';
+        cell.style.fontWeight = 'bold';
+        cell.style.fontSize = '1.1rem';
+        cell.style.background = '#f8fbff';
+        cell.style.textAlign = 'center';
+        return;
+      }
+      records.forEach((record, index) => {
+        const row = tbody.insertRow();
 
-            // Add note to the appropriate pages
-            addToNotesPage(note);
-            if (type === 'متابعة' || type === 'قائمة شراء') {
-                addToFollowUpPage(note);
-            } else if (type === 'توصيل') {
-                addToDeliveryPage(note);
-            }
+        row.insertCell().textContent = record.reading;
 
-            // Clear input fields
-            document.getElementById('phone').value = '';
-            document.getElementById('question').value = '';
-            document.getElementById('answer').value = '';
-            document.getElementById('type').value = 'استفسار';
-        }
+        const noteCell = row.insertCell();
+        noteCell.className = `note ${record.noteClass}`;
+        noteCell.innerHTML = `<span aria-hidden="true">${record.noteIcon}</span> ${record.note}`;
 
-        function addToNotesPage(note) {
-            const searchResults = document.getElementById('searchResults');
-            searchResults.innerHTML += `
-                <li>
-                    رقم الهاتف: ${note.phone}<br>
-                    السؤال: ${note.question}<br>
-                    الإجابة: ${note.answer}<br>
-                    النوع: ${note.type}<br>
-                    التاريخ: ${note.date}<br>
-                    الحالة: ${note.status}<br>
-                    محفوظ بواسطة: ${note.savedBy}<br>
-                    <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
-                    <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
-                    <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
-                </li>
-            `;
-        }
+        row.insertCell().textContent = `${record.date} - ${record.time}`;
 
-        function addToFollowUpPage(note) {
-            const followUpTableBody = document.getElementById('followUpTableBody');
-            followUpTableBody.innerHTML += `
-                <li>
-                    رقم الهاتف: ${note.phone}<br>
-                    السؤال: ${note.question}<br>
-                    الإجابة: ${note.answer}<br>
-                    النوع: ${note.type}<br>
-                    التاريخ: ${note.date}<br>
-                    محفوظ بواسطة: ${note.savedBy}<br>
-                    <button onclick="markAsCompleted('${note.phone}', '${note.date}')">إتمام المهمة</button>
-                    <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
-                </li>
-            `;
-        }
+        const deleteCell = row.insertCell();
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = '<span aria-hidden="true">🗑️</span> حذف';
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.onclick = () => deleteRecord(index);
+        deleteCell.appendChild(deleteBtn);
+      });
+    }
 
-        function addToDeliveryPage(note) {
-            const deliveryTableBody = document.getElementById('deliveryTableBody');
-            deliveryTableBody.innerHTML += `
-                <li>
-                    رقم الهاتف: ${note.phone}<br>
-                    السؤال: ${note.question}<br>
-                    الإجابة: ${note.answer}<br>
-                    النوع: ${note.type}<br>
-                    التاريخ: ${note.date}<br>
-                    محفوظ بواسطة: ${note.savedBy}<br>
-                    <button onclick="markAsPrepared('${note.phone}', '${note.date}')">تم التجهيز</button>
-                    <button onclick="markAsPending('${note.phone}', '${note.date}')">انتظار للتأكيد</button>
-                </li>
-            `;
-        }
+    function downloadPDF() {
+      // إخفاء عمود الحذف مؤقتًا
+      document.querySelectorAll('th:last-child, td:last-child, .delete-btn').forEach(el => {
+        el.style.display = 'none';
+      });
 
-        function moveToFollowUp(phone, date) {
-            const note = notes.find(n => n.phone === phone && n.date === date);
-            if (note) {
-                note.type = 'متابعة';
-                note.status = 'جاري المعالجة';
-                localStorage.setItem('notes', JSON.stringify(notes));
-                alert('تم نقل الملاحظة إلى المتابعة.');
-                updateFollowUpPage();
-            }
-        }
+      const element = document.getElementById('tableContainer');
+      const opt = {
+        margin: 0.5,
+        filename: 'blood_sugar_report.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
 
-        function moveToDelivery(phone, date) {
-            const note = notes.find(n => n.phone === phone && n.date === date);
-            if (note) {
-                note.type = 'توصيل';
-                note.status = 'جاري المعالجة';
-                localStorage.setItem('notes', JSON.stringify(notes));
-                alert('تم نقل الملاحظة إلى التوصيل.');
-                updateDeliveryPage();
-            }
-        }
-
-        function markAsPrepared(phone, date) {
-            const noteIndex = notes.findIndex(n => n.phone === phone && n.date === date);
-            if (noteIndex !== -1) {
-                notes[noteIndex].status = 'تم التجهيز'; // Update the status only
-                localStorage.setItem('notes', JSON.stringify(notes));
-                alert('تم تجهيز الملاحظة وحذفها من صفحة التوصيل.');
-                updateDeliveryPage(); // Update the التوصيل page
-            }
-        }
-
-        function markAsCompleted(phone, date) {
-            const noteIndex = notes.findIndex(n => n.phone === phone && n.date === date);
-            if (noteIndex !== -1) {
-                notes[noteIndex].status = 'تم الإنجاز'; // Update the status only
-                localStorage.setItem('notes', JSON.stringify(notes));
-                alert('تم إتمام المهمة وحذف الملاحظة من صفحة المتابعة.');
-                updateFollowUpPage(); // Update the متابعة page
-            }
-        }
-
-        function updateFollowUpPage() {
-            const followUpTableBody = document.getElementById('followUpTableBody');
-            followUpTableBody.innerHTML = '';
-            notes.filter(note => (note.type === 'متابعة' || note.type === 'قائمة شراء') && note.status !== 'تم الإنجاز').forEach(addToFollowUpPage);
-        }
-
-        function updateDeliveryPage() {
-            const deliveryTableBody = document.getElementById('deliveryTableBody');
-            deliveryTableBody.innerHTML = '';
-            notes.filter(note => note.type === 'توصيل' && note.status !== 'تم التجهيز').forEach(addToDeliveryPage);
-        }
-
-        function updateNotesPage() {
-            const searchResults = document.getElementById('searchResults');
-            searchResults.innerHTML = notes
-                .map(note => `
-                    <li>
-                        رقم الهاتف: ${note.phone}<br>
-                        السؤال: ${note.question}<br>
-                        الإجابة: ${note.answer}<br>
-                        النوع: ${note.type}<br>
-                        التاريخ: ${note.date}<br>
-                        الحالة: ${note.status}<br>
-                        محفوظ بواسطة: ${note.savedBy}<br>
-                        <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
-                        <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
-                        <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
-                    </li>
-                `).join('');
-        }
-
-        function updateSummaryPage() {
-            const totalNotes = notes.length;
-            const inquiries = notes.filter(note => note.type === 'استفسار').length;
-            const followUps = notes.filter(note => note.type === 'متابعة').length;
-            const deliveries = notes.filter(note => note.type === 'توصيل').length;
-            const purchaseLists = notes.filter(note => note.type === 'قائمة شراء').length;
-
-            const summaryResults = document.getElementById('summaryResults');
-            summaryResults.innerHTML = `
-                <li>إجمالي عدد الملاحظات: ${totalNotes}</li>
-                <li>عدد الاستفسارات: ${inquiries}</li>
-                <li>عدد المتابعات: ${followUps}</li>
-                <li>عدد التوصيلات: ${deliveries}</li>
-                <li>عدد قوائم الشراء: ${purchaseLists}</li>
-            `;
-        }
-
-        function deleteNote(phone, date) {
-            const confirmDelete = confirm('هل أنت متأكد أنك تريد حذف هذه الملاحظة؟');
-            if (confirmDelete) {
-                notes = notes.filter(note => !(note.phone === phone && note.date === date));
-                localStorage.setItem('notes', JSON.stringify(notes));
-                alert('تم حذف الملاحظة بنجاح.');
-                updateNotesPage();
-            }
-        }
-
-        function showPage(pageId) {
-            document.querySelectorAll('.container').forEach(page => page.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-
-            // Update content dynamically when switching pages
-            if (pageId === 'page2') updateNotesPage();
-            if (pageId === 'page3') updateFollowUpPage();
-            if (pageId === 'page4') updateDeliveryPage();
-            if (pageId === 'summaryPage') updateSummaryPage();
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            showPage('mainPage'); // Show the main page by default
+      html2pdf().set(opt).from(element).save().then(() => {
+        // إعادة إظهار العمود بعد التحميل
+        document.querySelectorAll('th:last-child, td:last-child, .delete-btn').forEach(el => {
+          el.style.display = '';
         });
-
-        function searchNotes() {
-            const searchQuery = document.getElementById('search').value.trim().toLowerCase();
-            const results = notes.filter(note =>
-                note.phone.includes(searchQuery) ||
-                note.question.toLowerCase().includes(searchQuery) ||
-                note.answer.toLowerCase().includes(searchQuery) ||
-                note.date.includes(searchQuery)
-            );
-
-            const searchResults = document.getElementById('searchResults');
-            searchResults.innerHTML = results.length
-                ? results.map(note => `
-                    <li>
-                        رقم الهاتف: ${note.phone}<br>
-                        السؤال: ${note.question}<br>
-                        الإجابة: ${note.answer}<br>
-                        النوع: ${note.type}<br>
-                        التاريخ: ${note.date}<br>
-                        الحالة: ${note.status}<br>
-                        محفوظ بواسطة: ${note.savedBy}<br>
-                        <button onclick="moveToFollowUp('${note.phone}', '${note.date}')">نقل إلى المتابعة</button>
-                        <button onclick="moveToDelivery('${note.phone}', '${note.date}')">نقل إلى التوصيل</button>
-                        <button onclick="deleteNote('${note.phone}', '${note.date}')">حذف</button>
-                    </li>
-                `).join('')
-                : '<li>لا توجد نتائج مطابقة.</li>';
-        }
-
-        function addToBlacklist() {
-            const phone = document.getElementById('blacklistPhone').value.trim();
-            if (!phone) {
-                alert('يرجى إدخال رقم الهاتف.');
-                return;
-            }
-
-            if (blacklist.includes(phone)) {
-                alert('هذا الرقم موجود بالفعل في القائمة السوداء.');
-                return;
-            }
-
-            blacklist.push(phone);
-            localStorage.setItem('blacklist', JSON.stringify(blacklist));
-            alert('تمت إضافة الرقم إلى القائمة السوداء.');
-            document.getElementById('blacklistPhone').value = '';
-            updateBlacklistPage();
-        }
-
-        function searchBlacklist() {
-            const searchQuery = document.getElementById('blacklistSearch').value.trim();
-            const results = blacklist.filter(phone => phone.includes(searchQuery));
-
-            const blacklistResults = document.getElementById('blacklistResults');
-            blacklistResults.innerHTML = results.length
-                ? results.map(phone => `<li>رقم الهاتف: ${phone}</li>`).join('')
-                : '<li>لا توجد نتائج مطابقة.</li>';
-        }
-
-        function deleteFromBlacklist(phone) {
-            const confirmDelete = confirm(`هل أنت متأكد أنك تريد حذف الرقم ${phone} من القائمة السوداء؟`);
-            if (confirmDelete) {
-                blacklist = blacklist.filter(p => p !== phone);
-                localStorage.setItem('blacklist', JSON.stringify(blacklist));
-                alert('تم حذف الرقم من القائمة السوداء.');
-                updateBlacklistPage();
-            }
-        }
-
-        function updateBlacklistPage() {
-            const blacklistResults = document.getElementById('blacklistResults');
-            blacklistResults.innerHTML = blacklist.map(phone => `
-                <li>
-                    رقم الهاتف: ${phone}
-                    <button onclick="deleteFromBlacklist('${phone}')">حذف</button>
-                </li>
-            `).join('');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateBlacklistPage();
-        });
-    </script>
+      });
+    }
+  </script>
 </body>
 </html>
